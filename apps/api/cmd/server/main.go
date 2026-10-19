@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/TheSnowLord/Dexathon_Team-Zyven/apps/api/internal/store"
+	"github.com/TheSnowLord/Dexathon_Team-Zyven/apps/api/seed"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -47,6 +48,10 @@ func main() {
 		log.Fatalf("Fatal: Database initialization failed: %v", err)
 	}
 	defer db.Close()
+
+	if err := seed.SeedDatabase(db.DB); err != nil {
+		log.Printf("Warning: Seeding failed: %v", err)
+	}
 
 	app := fiber.New(fiber.Config{
 		AppName: "ACE Opportunity Compass API v1",
