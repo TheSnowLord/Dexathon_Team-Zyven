@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --canvas: #F5F6F8;
+    --ink: #14171F;
+    --ink-muted: #4A5268;
+    --ink-subtle: #7E88A0;
+    --primary: #2B3F8C;
+    --primary-hover: #213271;
+    --primary-subtle: #EAEFFC;
+    --status-meets: #1F7A4D;
+    --status-meets-bg: #E9F5EF;
+    --status-verify: #A9690F;
+    --status-verify-bg: #FDF4E7;
+    --status-unmet: #A13A2E;
+    --status-unmet-bg: #FDF0EE;
+    --border: #E2E4EA;
+    --border-subtle: #ECEEF2;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Fraunces', Georgia, serif;
+    letter-spacing: -0.015em;
+  }
+}
+
+/* Accessible focus ring */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
