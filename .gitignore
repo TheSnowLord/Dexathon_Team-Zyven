@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production build outputs
+dist/
+build/
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Environment & local credentials
+.env
+.env.local
+.env.*.local
+*.local
+
+# Database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+data/
+
+# Go artifacts
+apps/api/bin/
+apps/api/tmp/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor & OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
