@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/TheSnowLord/Dexathon_Team-Zyven/apps/api/internal/handlers"
 	"github.com/TheSnowLord/Dexathon_Team-Zyven/apps/api/internal/store"
 	"github.com/TheSnowLord/Dexathon_Team-Zyven/apps/api/seed"
 	"github.com/gofiber/fiber/v2"
@@ -11,31 +12,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
-
-type APIResponse struct {
-	Data  interface{} `json:"data"`
-	Error interface{} `json:"error"`
-}
-
-type APIError struct {
-	Message string `json:"message"`
-}
-
-func Success(c *fiber.Ctx, data interface{}) error {
-	return c.Status(fiber.StatusOK).JSON(APIResponse{
-		Data:  data,
-		Error: nil,
-	})
-}
-
-func Error(c *fiber.Ctx, status int, message string) error {
-	return c.Status(status).JSON(APIResponse{
-		Data: nil,
-		Error: APIError{
-			Message: message,
-		},
-	})
-}
 
 func main() {
 	dbPath := os.Getenv("DATABASE_URL")
@@ -53,6 +29,8 @@ func main() {
 		log.Printf("Warning: Seeding failed: %v", err)
 	}
 
+	h := handlers.NewHandler(db.DB)
+
 	app := fiber.New(fiber.Config{
 		AppName: "ACE Opportunity Compass API v1",
 	})
@@ -67,16 +45,38 @@ func main() {
 
 	v1 := app.Group("/api/v1")
 
+	// Health
 	v1.Get("/health", func(c *fiber.Ctx) error {
 		if err := db.Ping(); err != nil {
-			return Error(c, fiber.StatusServiceUnavailable, "Database unhealthy")
+			return handlers.Error(c, fiber.StatusServiceUnavailable, "Database unhealthy")
 		}
-		return Success(c, fiber.Map{
+		return handlers.Success(c, fiber.Map{
 			"status":  "ok",
 			"service": "ACE Opportunity Compass API",
 			"version": "v1.0.0",
 		})
 	})
+
+	// Profiles (Stage 2: Profile)
+	v1.Post("/profiles", h.UpsertProfile)
+	v1.Get("/profiles/:id", h.GetProfile)
+	v1.Delete("/profiles/:id", h.DeleteProfile) // Full deletion guardrail
+
+	// Opportunities (Stage 1: Discover & Stage 3: Explain)
+	v1.Get("/opportunities", h.ListOpportunities)
+	v1.Get("/opportunities/:id", h.GetOpportunity)
+	v1.Get("/opportunities/:id/match", h.GetOpportunityMatch)
+
+	// Plans (Stage 4: Plan)
+	v1.Post("/plan", h.CreatePlanItem)
+	v1.Get("/plan", h.ListPlanItems)
+	v1.Patch("/plan/:id", h.UpdatePlanItem)
+	v1.Delete("/plan/:id", h.DeletePlanItem)
+	v1.Get("/plan/:id/ics", h.GetPlanICS)
+
+	// Reminders (Stage 5: Remind)
+	v1.Get("/reminders", h.GetReminders)
+	v1.Put("/reminders", h.UpsertReminders)
 
 	port := os.Getenv("PORT")
 	if port == "" {
