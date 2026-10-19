@@ -10,10 +10,10 @@ import (
 
 // ComputeMatch evaluates a Profile against an Opportunity in a deterministic, rules-first manner.
 func ComputeMatch(profile *models.Profile, opp *models.Opportunity) models.MatchResult {
-	var matchReasons []string
-	var meets []string
-	var verify []string
-	var unmet []string
+	matchReasons := make([]string, 0)
+	meets := make([]string, 0)
+	verify := make([]string, 0)
+	unmet := make([]string, 0)
 
 	// 1. Branch evaluation
 	branchMatch := false
