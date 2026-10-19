@@ -61,14 +61,15 @@ export const Header: React.FC = () => {
                 <Link
                   key={to}
                   to={to}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  aria-label={label}
+                  className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-primary text-white shadow-sm"
                       : "text-ink-muted hover:text-ink hover:bg-canvas"
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{label}</span>
+                  <Icon className="w-4 h-4 shrink-0" />
+                  <span className="hidden xs:inline sm:inline">{label}</span>
                 </Link>
               );
             })}
