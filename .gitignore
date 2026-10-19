@@ -45,3 +45,7 @@ pnpm-debug.log*
 *.swo
 .DS_Store
 Thumbs.db
+
+# OAuth token workflow permissions
+.github/
+
