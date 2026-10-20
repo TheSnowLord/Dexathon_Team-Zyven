@@ -42,7 +42,7 @@
 | **Core Value** | Additive confidence & backward-scheduled planning layer on top of opportunity discovery |
 | **Matching Engine** | **100% Deterministic & rules-first** (Branch, Year, Skills, Budget, Remote). Zero LLM hallucinations. |
 | **Eligibility Model** | Transparent 3-tier: `Meets` (Emerald), `Verify with Organizer` (Amber), `Unmet` (Rust) |
-| **Execution Plan** | Automated milestone schedule ($T-7\text{d}$, $T-5\text{d}$/$T-4\text{d}$, $T-2\text{d}$, $T-0$) with RFC 5545 `.ics` calendar sync |
+| **Execution Plan** | Automated milestone schedule (T-7d, T-5d / T-4d, T-2d, T-0) with RFC 5545 `.ics` calendar sync |
 | **Backend Stack** | Go 1.22+, Fiber v2, Pure-Go SQLite (`modernc.org/sqlite`), Embedded SQL migrations |
 | **Frontend Stack** | React 19, TypeScript, Vite, Tailwind CSS, TanStack Query v5 |
 | **Privacy & Trust** | Default OFF nudges, Quiet Hours window (`22:00`–`08:00`), Single-tenant SQLite, Atomic cascade purge |
@@ -137,7 +137,7 @@ Every academic year, students discover hundreds of hackathons, internships, comp
 **ACE Opportunity Compass** is an additive planning and confidence layer on top of All College Event discovery. It does not replace the discovery feed — it augments it with actionable certainty:
 
 - **Rules-First Eligibility:** Explains *why* an event fits your student background with a transparent 3-tier criteria breakdown (**Meets**, **Verify with Organizer**, **Unmet**).
-- **Automated Milestone Back-off:** Converts saved opportunities into backward-scheduled preparation milestones ($T-7\text{d}$, $T-5\text{d}$, $T-2\text{d}$, $T-0$) with real-time completion tracking.
+- **Automated Milestone Back-off:** Converts saved opportunities into backward-scheduled preparation milestones (T-7d, T-5d, T-2d, T-0) with real-time completion tracking.
 - **RFC 5545 `.ics` Export:** Single-click sync into Google Calendar, Apple Calendar, or Microsoft Outlook.
 - **Student Privacy & Sleep Protection:** Smart Nudges are strictly **Default OFF** until opted in, supported by a configurable **Quiet Hours Window** (22:00–08:00) and permanent cascade data erasure.
 
