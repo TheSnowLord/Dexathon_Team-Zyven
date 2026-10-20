@@ -3,14 +3,15 @@
 </p>
 
 <p align="center">
-  <img src="./apps/web/public/compass-icon.svg" width="64" height="64" alt="ACE Opportunity Compass Logo" />
+  <img src="docs/assets/dexathon-logo.png" width="340" alt="DEXATHON 2026 Logo" /><br>
+  <img src="apps/web/public/compass-icon.svg" width="64" height="64" alt="ACE Opportunity Compass Logo" />
 </p>
 
 <h1 align="center">ACE Opportunity Compass</h1>
 
 <p align="center">
   <strong>An additive planning and confidence layer on top of opportunity discovery for college students.</strong><br>
-  Built for <strong>DEXATHON 2026</strong> · <em>ACE NextGen Challenge (Problem Statement Category: Software)</em><br>
+  Built for <strong>DEXATHON 2026</strong> · <em>ACE NextGen Challenge (Category: Software)</em><br>
   <strong>Team Zyven</strong> · Ankush Shahu
 </p>
 
@@ -32,17 +33,94 @@
 
 ---
 
+## ◈ At a Glance
+
+| Dimension | Specification |
+|---|---|
+| **Event / Track** | **DEXATHON 2026** · *ACE NextGen Challenge* (Category: Software) |
+| **Team / Author** | **Team Zyven** · Ankush Shahu |
+| **Core Value** | Additive confidence & backward-scheduled planning layer on top of opportunity discovery |
+| **Matching Engine** | **100% Deterministic & rules-first** (Branch, Year, Skills, Budget, Remote). Zero LLM hallucinations. |
+| **Eligibility Model** | Transparent 3-tier: `Meets` (Emerald), `Verify with Organizer` (Amber), `Unmet` (Rust) |
+| **Execution Plan** | Automated milestone schedule ($T-7\text{d}$, $T-5\text{d}$/$T-4\text{d}$, $T-2\text{d}$, $T-0$) with RFC 5545 `.ics` calendar sync |
+| **Backend Stack** | Go 1.22+, Fiber v2, Pure-Go SQLite (`modernc.org/sqlite`), Embedded SQL migrations |
+| **Frontend Stack** | React 19, TypeScript, Vite, Tailwind CSS, TanStack Query v5 |
+| **Privacy & Trust** | Default OFF nudges, Quiet Hours window (`22:00`–`08:00`), Single-tenant SQLite, Atomic cascade purge |
+| **CI Verification** | Automated GitHub Actions CI pipeline testing Go backend suites and building React frontend bundle |
+| **License** | MIT License |
+
+---
+
+## ◈ Table of Contents
+
+- [◈ 01 — Product Walkthrough](#-01--product-walkthrough)
+- [◈ 02 — Try It in 2 Minutes](#-02--try-it-in-2-minutes)
+- [◈ 03 — The Problem](#-03--the-problem)
+- [◈ 04 — The Solution](#-04--the-solution)
+- [◈ 05 — The Five-Stage Flow](#-05--the-five-stage-flow)
+- [◈ 06 — Product Pipeline Flow](#-06--product-pipeline-flow)
+- [◈ 07 — Trust & Eligibility Model](#-07--trust--eligibility-model)
+- [◈ 08 — Verified Tech Stack](#-08--verified-tech-stack)
+- [◈ 09 — Design Decisions & Trade-Offs](#-09--design-decisions--trade-offs)
+- [◈ 10 — System Architecture](#-10--system-architecture)
+- [◈ 11 — Getting Started & Environment](#-11--getting-started--environment)
+- [◈ 12 — API Reference](#-12--api-reference)
+- [◈ 13 — Visual Identity & Tokens](#-13--visual-identity--tokens)
+- [◈ 14 — Project Structure](#-14--project-structure)
+- [◈ 15 — Testing & Verification](#-15--testing--verification)
+- [◈ 16 — For Judges: Where to Look](#-16--for-judges-where-to-look)
+- [◈ 17 — Deliberate Scope & Limitations](#-17--deliberate-scope--limitations)
+- [◈ 18 — Roadmap](#-18--roadmap)
+- [◈ 19 — Troubleshooting](#-19--troubleshooting)
+- [◈ 20 — Documentation Index](#-20--documentation-index)
+- [◈ 21 — Contributing & License](#-21--contributing--license)
+
+---
+
 ## ◈ 01 — Product Walkthrough
 
 A complete, live walkthrough of the 5-stage student journey running against the pure-Go SQLite backend and React 19 interface:
 
 <p align="center">
-  <img src="./docs/screenshots/walkthrough.gif" width="100%" alt="ACE Opportunity Compass Walkthrough" />
+  <img src="docs/screenshots/walkthrough.gif" width="100%" alt="ACE Opportunity Compass Walkthrough" />
 </p>
 
 ---
 
-## ◈ 02 — The Problem
+## ◈ 02 — Try It in 2 Minutes
+
+### 1. Interactive Web Walkthrough
+Follow the exact sequence shown in the walkthrough GIF above:
+1. **Discover (`/discover`):** Browse seeded hackathons, internships, competitions, and workshops. Note the instantaneous match badges (`Looks eligible`, `2 to verify`, `Not eligible`).
+2. **Profile (`/profile`):** Update student signals (e.g., Year: 3, Branch: Information Technology, Budget Cap: ₹300).
+3. **Filter (`/discover`):** Filter by category or search term to see the catalog re-ranked dynamically by rule fit.
+4. **Explain (`/opportunity/opp-ai-impact-2026`):** Open *AI for Impact Hackathon*. Inspect the transparent 3-tier eligibility breakdown citing exact rules for branch, year, cost, and team formation.
+5. **Plan (`/plan`):** Click **Save to Preparation Plan**. Check off preparation milestones and click **Export .ics Calendar** to download an RFC 5545 calendar feed.
+6. **Remind (`/settings`):** Review nudge settings. Verify that smart alerts are **Default OFF** and the **Quiet Hours** window (`22:00`–`08:00`) protects student sleep.
+
+### 2. Fast Terminal Verification (`curl`)
+If services are running locally, verify the core API endpoints directly from your shell:
+
+```bash
+# 1. System health & database connectivity
+curl -s http://127.0.0.1:8080/api/v1/health
+
+# 2. Retrieve student profile signals
+curl -s http://127.0.0.1:8080/api/v1/profiles/demo-student-zyven
+
+# 3. Query opportunity with deterministic eligibility breakdown
+curl -s "http://127.0.0.1:8080/api/v1/opportunities/opp-ai-impact-2026?profileId=demo-student-zyven"
+
+# 4. View active preparation plan with backward milestones
+curl -s "http://127.0.0.1:8080/api/v1/plan?profileId=demo-student-zyven"
+
+# 5. Export RFC 5545 iCalendar stream
+curl -s http://127.0.0.1:8080/api/v1/plan/plan-demo-ai-impact/ics
+```
+
+---
+
+## ◈ 03 — The Problem
 
 > *"The bottleneck isn’t discovery. It’s follow-through."*  
 > — DEXATHON 2026 Problem Discovery Brief (`docs/problem-statement.md`)
@@ -54,18 +132,18 @@ Every academic year, students discover hundreds of hackathons, internships, comp
 
 ---
 
-## ◈ 03 — The Solution
+## ◈ 04 — The Solution
 
 **ACE Opportunity Compass** is an additive planning and confidence layer on top of All College Event discovery. It does not replace the discovery feed — it augments it with actionable certainty:
 
 - **Rules-First Eligibility:** Explains *why* an event fits your student background with a transparent 3-tier criteria breakdown (**Meets**, **Verify with Organizer**, **Unmet**).
-- **Automated Milestone Back-off:** Converts saved opportunities into backward-scheduled preparation milestones ($T-14\text{d}$, $T-7\text{d}$, $T-3\text{d}$, $T-24\text{h}$) with real-time completion tracking.
+- **Automated Milestone Back-off:** Converts saved opportunities into backward-scheduled preparation milestones ($T-7\text{d}$, $T-5\text{d}$, $T-2\text{d}$, $T-0$) with real-time completion tracking.
 - **RFC 5545 `.ics` Export:** Single-click sync into Google Calendar, Apple Calendar, or Microsoft Outlook.
 - **Student Privacy & Sleep Protection:** Smart Nudges are strictly **Default OFF** until opted in, supported by a configurable **Quiet Hours Window** (22:00–08:00) and permanent cascade data erasure.
 
 ---
 
-## ◈ 04 — The Five-Stage Flow
+## ◈ 05 — The Five-Stage Flow
 
 ```
 01 — DISCOVER   Multi-facet catalog search & instant match badge preview
@@ -86,7 +164,7 @@ Every academic year, students discover hundreds of hackathons, internships, comp
 
 ---
 
-## ◈ 05 — Product Pipeline Flow
+## ◈ 06 — Product Pipeline Flow
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#2B3F8C', 'primaryTextColor': '#F5F6F8', 'primaryBorderColor': '#2B3F8C', 'lineColor': '#7E88A0', 'secondaryColor': '#EAEFFC', 'tertiaryColor': '#F5F6F8', 'edgeLabelBackground': '#F5F6F8', 'clusterBkg': '#EAEFFC', 'clusterBorder': '#2B3F8C', 'fontSize': '14px'}}}%%
@@ -100,15 +178,34 @@ flowchart LR
 
 ---
 
-## ◈ 06 — Trust & Eligibility Model
+## ◈ 07 — Trust & Eligibility Model
 
-Opaque recommendation algorithms ("87% match") create false expectations and confusion. ACE Opportunity Compass operates on a **strictly deterministic, rules-first eligibility engine**:
+Opaque recommendation percentages ("87% match") create false expectations and confusion. ACE Opportunity Compass operates on a **strictly deterministic, rules-first eligibility engine**:
 
 | Tier | Status Color | Token Hex | Semantic Meaning |
 |---|---|---|---|
-| **Meets** | Deep Emerald | `#1F7A4D` | Criteria programmatically verified against student signals (e.g. branch match, year match, cost within budget cap). |
-| **Verify** | Amber | `#A9690F` | Subjective or external criteria requiring organizer confirmation (e.g. cross-college team allowance, prior hackathon experience preferred). |
-| **Unmet** | Muted Rust | `#A13A2E` | Explicit disqualifications (e.g. branch restricted, year out of bounds, registration cost exceeds student cap). |
+| **Meets** | Deep Emerald | `#1F7A4D` | Criteria programmatically verified against student signals (e.g., branch match, year match, cost within budget cap). |
+| **Verify** | Amber | `#A9690F` | Subjective or external criteria requiring organizer confirmation (e.g., cross-college team allowance, prior experience preferred). |
+| **Unmet** | Muted Rust | `#A13A2E` | Explicit disqualifications (e.g., branch restricted, year out of bounds, registration cost exceeds student cap). |
+
+### Note on `score_percent` vs 3-Tier Clarity
+While the UI intentionally avoids presenting opaque percentage badges to students, the API returns an internal `score_percent` field (0–100). This is strictly an **internal heuristic ranking tiebreaker** for default list sorting on the Discover page. It is computed deterministically in `matching.go`:
+```
+Base (50) + Branch Match (+20) + Year Match (+15) + Skills (+5/tag) + Remote (+10)
+[Hard Disqualification Clamp: 20]
+```
+Students are **never** shown a black-box percentage score in place of eligibility truth; they are always presented with the factual 3-tier criteria breakdown (**Meets**, **Verify**, **Unmet**).
+
+### Backward Milestone Back-off Formula
+Milestones are generated backward from the opportunity deadline (`apps/api/internal/matching/steps.go`):
+- **T-7 Days:** Initial verification of official rules, eligibility, and organizer checklist (clamped to today if deadline < 7 days away).
+- **T-5 Days:** Category-specific core milestone:
+  - *Hackathons:* Confirm team members (2–4 students) and draft concept/architecture.
+  - *Internships:* Tailor resume, update portfolio links, and commit GitHub repos.
+  - *Competitions:* Compile required student credentials, college ID cards, and abstract draft.
+  - *Workshops (T-4 Days):* Review prerequisite materials and prepare questions.
+- **T-2 Days:** Pre-submission dry run, proofreading, and link validation.
+- **T-0 (Deadline Day):** Final registration and project submission before official cutoff.
 
 ### Privacy & Trust Guardrails
 - **Default OFF Reminders:** Notifications never send unsolicited marketing or promotional blasts.
@@ -117,7 +214,7 @@ Opaque recommendation algorithms ("87% match") create false expectations and con
 
 ---
 
-## ◈ 07 — Verified Tech Stack
+## ◈ 08 — Verified Tech Stack
 
 Every technology in this stack has been verified against `apps/api/go.mod` and `apps/web/package.json`:
 
@@ -139,7 +236,20 @@ Every technology in this stack has been verified against `apps/api/go.mod` and `
 
 ---
 
-## ◈ 08 — System Architecture
+## ◈ 09 — Design Decisions & Trade-Offs
+
+| Decision | Choice Made | Alternative Considered | Rationale & Trade-Off |
+|---|---|---|---|
+| **Database Engine** | Pure-Go SQLite (`modernc.org/sqlite`) | PostgreSQL / MySQL | Eliminates external daemon and CGO compiler dependencies. Provides zero-setup single-binary portability for evaluators and students. SQLite in WAL mode easily handles concurrent student reads. |
+| **Eligibility Engine** | Deterministic Boolean Rules | Generative LLM / RAG | College opportunity eligibility (batch, branch, CGPA, cost) requires 100% precision. LLMs introduce hallucinations, latency, token costs, and non-reproducible answers. Rules-first guarantees explainability. |
+| **Product Boundary** | Additive Confidence & Planning Layer | Scraper / ACE Clone | Respects ACE as the discovery authority. Instead of duplicating catalog listings, Compass provides the missing tactical execution, eligibility checks, and calendar integrations. |
+| **Authentication & Tenancy** | Lightweight Profile ID + LocalStorage | Multi-tenant OAuth / JWT | Removes onboarding friction for students while strictly preserving privacy. Avoids collecting passwords or sensitive institutional credentials. True right-to-erasure is an atomic SQLite cascade delete. |
+| **Milestone Scheduling** | Backward-Scheduled Dynamic Offsets | Fixed Static Dates | Fixed dates fail when opportunities are saved near the deadline. Dynamic offsets ($T-7\text{d}$, $T-5\text{d}$, $T-2\text{d}$) dynamically clamp to current date, ensuring a realistic, panic-free preparation runway. |
+| **Notification Vector** | RFC 5545 `.ics` Export + In-App Cadence | Push Notifications / SMS | Calendar feeds integrate directly into student daily tools (Google/Apple/Outlook Calendar) without intrusive spam, phone number collection, or paid SMS gateways. |
+
+---
+
+## ◈ 10 — System Architecture
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#2B3F8C', 'primaryTextColor': '#F5F6F8', 'primaryBorderColor': '#2B3F8C', 'lineColor': '#7E88A0', 'secondaryColor': '#EAEFFC', 'tertiaryColor': '#F5F6F8', 'edgeLabelBackground': '#F5F6F8', 'clusterBkg': '#EAEFFC', 'clusterBorder': '#2B3F8C', 'fontSize': '14px'}}}%%
@@ -182,12 +292,22 @@ flowchart TD
 
 ---
 
-## ◈ 09 — Getting Started
+## ◈ 11 — Getting Started & Environment
 
 ### Prerequisites
 - **Go:** `1.22+`
 - **Node.js:** `20+` (includes `npm`)
 - **Git**
+
+### Environment Configuration
+The project runs out of the box with zero configuration. You can customize settings via `.env`:
+
+| Variable | Default Value | Role |
+|---|---|---|
+| `PORT` | `8080` | Port for the Go Fiber REST backend server |
+| `ENV` | `development` | Runtime environment flag (`development`, `production`, `test`) |
+| `DATABASE_URL` | `data/compass.db` | Filepath to the SQLite database file |
+| `VITE_API_URL` | `http://localhost:8080` | Base URL used by the React web frontend |
 
 ### 1. Clone Repository
 ```bash
@@ -195,16 +315,7 @@ git clone https://github.com/TheSnowLord/Dexathon_Team-Zyven.git
 cd Dexathon_Team-Zyven
 ```
 
-### 2. Configure Environment (Optional)
-The project ships with pre-configured defaults in `.env.example`:
-```ini
-PORT=8080
-ENV=development
-DATABASE_URL=data/compass.db
-VITE_API_URL=http://localhost:8080
-```
-
-### 3. One-Click Launch
+### 2. One-Click Launch
 **On Linux / macOS:**
 ```bash
 chmod +x scripts/dev.sh
@@ -215,13 +326,28 @@ chmod +x scripts/dev.sh
 ```cmd
 .\scripts\dev.bat
 ```
+*(Alternatively on PowerShell: `powershell -ExecutionPolicy Bypass -File scripts\dev.ps1`)*
+
+### 3. Manual Launch (Alternative)
+If you prefer running services in dedicated terminals:
+
+```bash
+# Terminal 1: Backend
+cd apps/api
+go run cmd/server/main.go
+
+# Terminal 2: Frontend
+cd apps/web
+npm install
+npm run dev
+```
 
 - 🌐 **Web Interface:** `http://127.0.0.1:5173`
 - ⚡ **REST API Server:** `http://127.0.0.1:8080` (Health: `http://127.0.0.1:8080/api/v1/health`)
 
 ---
 
-## ◈ 10 — API Reference
+## ◈ 12 — API Reference
 
 All responses conform to the standard envelope format: `{"data": ..., "error": null}`.
 
@@ -324,8 +450,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:c2ed848f-9a09-4e0e-9626-20e41663e77c-0@opportunitycompass.ace
 DTSTAMP:20261020T015418Z
-DTSTART;VALUE=DATE:20261027
-DTEND;VALUE=DATE:20261028
+DTSTART;VALUE=DATE:20261108
+DTEND;VALUE=DATE:20261109
 SUMMARY:Read official guidelines and verify checklist items with organizer [AI for Impact Hackathon]
 DESCRIPTION:Opportunity Compass preparation milestone for AI for Impact Hackathon.\nSource: https://allcollegeevent.com/events/ai-for-impact-hackathon
 STATUS:NEEDS-ACTION
@@ -336,7 +462,7 @@ END:VCALENDAR
 
 ---
 
-## ◈ 11 — Visual Identity & Tokens
+## ◈ 13 — Visual Identity & Tokens
 
 The UI follows an accessible editorial design system based on `apps/web/src/lib/tokens.ts`:
 
@@ -353,7 +479,10 @@ The UI follows an accessible editorial design system based on `apps/web/src/lib/
 
 ---
 
-## ◈ 12 — Project Structure
+## ◈ 14 — Project Structure
+
+<details>
+<summary><strong>Click to view full repository file tree</strong></summary>
 
 ```
 Dexathon_Team-Zyven/
@@ -411,7 +540,10 @@ Dexathon_Team-Zyven/
 │       └── vite.config.ts
 │
 ├── docs/                          # Architecture & design specifications
+│   ├── assets/                    # Project brand assets
+│   │   └── dexathon-logo.png      # Official DEXATHON 2026 logo
 │   ├── screenshots/               # Visual proof and walkthrough GIF
+│   │   └── walkthrough.gif
 │   ├── ARCHITECTURE.md            # Detailed architecture specification
 │   ├── ASSUMPTIONS.md             # Design assumptions & engineering pivots
 │   ├── BUILD_BRIEF.md             # Challenge build brief
@@ -424,58 +556,131 @@ Dexathon_Team-Zyven/
 ├── LICENSE                        # MIT License
 └── README.md
 ```
+</details>
 
 ---
 
-## ◈ 13 — Testing & Verification
+## ◈ 15 — Testing & Verification
 
-The codebase is backed by automated test suites on both layers:
+The codebase is backed by automated test suites across both layers:
 
 ### 1. Backend Go Test Suites
+Run the backend tests:
 ```bash
 cd apps/api
 go test -v ./...
 ```
-- **Total Test Code:** `221` lines across `handlers_test.go` and `seed_test.go`.
-- **`TestAPICoreFlow`:** Exercises full REST flow: profile upsert, opportunity filtering, rules-first match evaluation, plan item creation, milestone checkoffs, RFC 5545 `.ics` export, and cascade deletion.
-- **`TestSeedDatabase`:** Asserts schema initialization, foreign key constraints, default demo profile creation, and presence of all 9 diverse seed opportunities (including *"AI for Impact Hackathon"*).
+- **`TestAPICoreFlow` (`handlers_test.go`):** 10-step full API verification:
+  - Verifies `/api/v1/health` connectivity.
+  - Queries seeded demo student profile.
+  - Tests student profile creation/upsert with branch, year, skills, and budget caps.
+  - Tests multi-opportunity catalog query with profile matching.
+  - Verifies deterministic 3-tier eligibility breakdown on *AI for Impact Hackathon*.
+  - Creates preparation plan and generates backward milestone back-off steps.
+  - Tests step completion toggle via `PATCH /api/v1/plan/:id`.
+  - Downloads and asserts RFC 5545 `.ics` iCalendar feed stream.
+  - Tests reminder preference updates and validates quiet hours enforcement.
+  - Validates atomic SQLite `ON DELETE CASCADE` upon profile deletion.
+- **`TestSeedDatabase` (`seed_test.go`):** Verifies schema migration application in WAL mode, database foreign key constraints, default profile population, and asserts $\ge 8$ diverse seed opportunities across hackathons, internships, competitions, and workshops.
 
 ### 2. Frontend Production Compilation
+Run the TypeScript and bundle build check:
 ```bash
 cd apps/web
 npm run build
 ```
 - **Zero TypeScript errors** (`tsc -b`).
-- Sub-second production bundle compilation via Vite (~`111 KB` gzipped JS, `5.17 KB` gzipped CSS).
+- Production bundle compiled via Vite (~`111 KB` gzipped JS, `5.17 KB` gzipped CSS).
 
 ### 3. Continuous Integration Status
 GitHub Actions workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) executes on every push and pull request to `main`.
-- **Run ID:** [39354435608](https://github.com/TheSnowLord/Dexathon_Team-Zyven/actions/runs/39354435608) — `✓ All jobs passed` (Frontend build & Go test suite).
+- **Status:** [![CI Pipeline](https://img.shields.io/github/actions/workflow/status/TheSnowLord/Dexathon_Team-Zyven/ci.yml?branch=main&style=flat-square&label=CI%20Pipeline)](https://github.com/TheSnowLord/Dexathon_Team-Zyven/actions/workflows/ci.yml) — passing green across all jobs.
 
 ---
 
-## ◈ 14 — Deliberate Scope & Limitations
+## ◈ 16 — For Judges: Where to Look
+
+This mapping connects the DEXATHON 2026 rubric criteria directly to code implementation and documentation:
+
+| Rubric Area | Solution Framing & Implementation | Primary Repo Location |
+|---|---|---|
+| **1. Problem & Idea** | Reframes student opportunity discovery into tactical execution and eligibility certainty. Solves eligibility anxiety and execution inertia without duplicating discovery. | [`docs/problem-statement.md`](docs/problem-statement.md)<br>[`docs/BUILD_BRIEF.md`](docs/BUILD_BRIEF.md) §1 |
+| **2. Technical Approach** | Modular architecture separating Go Fiber REST service, pure-Go SQLite storage, and React 19 UI. Deterministic rules engine with zero hallucination risk. | [`apps/api/cmd/server/main.go`](apps/api/cmd/server/main.go)<br>[`apps/api/internal/matching/`](apps/api/internal/matching/)<br>[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
+| **3. Feasibility & Reliability** | Zero external dependencies, pure-Go SQLite with embedded migrations, signal-safe graceful shutdown, and cross-platform one-click launchers. | [`apps/api/internal/store/db.go`](apps/api/internal/store/db.go)<br>[`apps/api/migrations/0001_init.sql`](apps/api/migrations/0001_init.sql)<br>[`scripts/dev.bat`](scripts/dev.bat) / [`scripts/dev.sh`](scripts/dev.sh) |
+| **4. Impact & User Agency** | Transparent 3-tier eligibility, privacy-first opt-in nudges with quiet hours sleep protection, RFC 5545 `.ics` export, atomic cascade purge. | [`apps/web/src/pages/DetailPage.tsx`](apps/web/src/pages/DetailPage.tsx)<br>[`apps/web/src/pages/PlanPage.tsx`](apps/web/src/pages/PlanPage.tsx)<br>[`apps/web/src/pages/SettingsPage.tsx`](apps/web/src/pages/SettingsPage.tsx) |
+| **5. Code Quality & Verification** | End-to-end passing CI, comprehensive test suite, sub-second TypeScript/Vite bundle compilation, and reproducible visual proof. | [`.github/workflows/ci.yml`](.github/workflows/ci.yml)<br>[`apps/api/internal/handlers/handlers_test.go`](apps/api/internal/handlers/handlers_test.go)<br>[`docs/screenshots/walkthrough.gif`](docs/screenshots/walkthrough.gif) |
+
+---
+
+## ◈ 17 — Deliberate Scope & Limitations
 
 As documented in [`docs/ASSUMPTIONS.md`](docs/ASSUMPTIONS.md):
 
 1. **Planning Layer, Not Official Authority:** ACE Opportunity Compass is designed to build student confidence and follow-through. It does not replace official event registration portals or organizer terms. Any subjective requirement is marked **Verify with Organizer**.
 2. **Illustrative Seed Data:** Seed opportunities are realistic illustrative examples across hackathons, internships, competitions, and workshops to exercise multi-facet filtering. They do not claim to scrape live private listings.
 3. **No External Cloud Dependencies:** The database is self-contained in pure Go SQLite (`compass.db`). Evaluators can clone and run the application immediately with zero Docker, PostgreSQL, or cloud account prerequisites.
+4. **No Login / Single-Student Tenancy:** The current implementation avoids collecting passwords or personal credentials. Student signals and plans are keyed to a local profile ID, ensuring seamless evaluation and zero data exposure risk.
 
 ---
 
-## ◈ 15 — Contributing & Verification Protocol
+## ◈ 18 — Roadmap
 
+Planned features for future iterations beyond the hackathon scope:
+- **Direct ACE Opportunity Webhook / Sync:** Ingest real-time opportunity updates directly from the ACE organizer portal.
+- **Offline PWA & Service Worker:** Cache saved plans and milestone checklists for full offline access during campus network outages.
+- **Multi-Tenant SSO / OAuth:** Integration with college single sign-on (LDAP / Google Workspace for Education).
+- **Email / Telegram Preparation Digest:** Weekly opt-in preparation digest sent before quiet hours with upcoming milestone deadlines.
+
+---
+
+## ◈ 19 — Troubleshooting
+
+- **Port Conflict on 8080 or 5173:**
+  - Backend: Change `PORT=8081` in `.env` and set `VITE_API_URL=http://localhost:8081` in `apps/web/.env`.
+  - Frontend: Vite automatically prompts to use the next available port (e.g., 5174) if 5173 is occupied.
+- **Resetting Database to Fresh Seed:**
+  To reset all database tables, seed opportunities, and demo profile:
+  ```bash
+  # Linux / macOS
+  rm -f apps/api/data/compass.db*
+
+  # Windows PowerShell
+  Remove-Item -Force apps\api\data\compass.db*
+  ```
+  Restart the API backend — it will automatically re-run embedded migrations and re-seed the catalog.
+- **Windows PowerShell Execution Policy:**
+  If PowerShell blocks script execution, run:
+  ```powershell
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+  ```
+  Or run `.\scripts\dev.bat` directly via `cmd.exe`.
+- **CORS Configuration:**
+  The Fiber backend permits all origins in development (`AllowOrigins: "*"`) with standard headers (`Content-Type`, `Authorization`, `X-Profile-ID`).
+
+---
+
+## ◈ 20 — Documentation Index
+
+| Document | Focus & Content |
+|---|---|
+| [`docs/problem-statement.md`](docs/problem-statement.md) | Official challenge problem statement, core student pain points (eligibility anxiety, execution inertia), and additive vision |
+| [`docs/BUILD_BRIEF.md`](docs/BUILD_BRIEF.md) | Comprehensive engineering specification, stage requirements, and design tokens |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Component topology, database schema, data flow pipelines, and route catalog |
+| [`docs/ASSUMPTIONS.md`](docs/ASSUMPTIONS.md) | Architectural ground rules, eligibility boundaries, privacy guardrails, and engineering pivots |
+| [`docs/screenshots/`](docs/screenshots/) | Milestone verification screenshots (`m4` through `m10`) and animated walkthrough GIF |
+
+---
+
+## ◈ 21 — Contributing & License
+
+### Contributing Protocol
 1. Fork the repository and create a feature branch (`git checkout -b feat/your-feature`).
 2. Adhere to **Conventional Commits** (`feat:`, `fix:`, `docs:`, `chore:`).
 3. Confirm `go test ./...` passes in `apps/api` and `npm run build` succeeds in `apps/web`.
 4. Ensure all new UI elements adhere to the brand tokens in `apps/web/src/lib/tokens.ts`.
 5. Submit a pull request against `main`.
 
----
-
-## ◈ 16 — License
-
+### License
 Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for complete terms.
 
 <p align="center">
@@ -483,6 +688,8 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for complete ter
 </p>
 
 <p align="center">
-  <img src="./apps/web/public/compass-icon.svg" width="32" height="32" alt="ACE Opportunity Compass Logo" /><br>
-  <strong>ACE Opportunity Compass</strong> · Built with pride for <strong>DEXATHON 2026</strong> by <strong>Team Zyven</strong>
+  <img src="docs/assets/dexathon-logo.png" width="180" alt="DEXATHON 2026 Logo" /><br>
+  <img src="apps/web/public/compass-icon.svg" width="36" height="36" alt="ACE Opportunity Compass Logo" /><br>
+  <strong>ACE Opportunity Compass</strong> · Built with pride for <strong>DEXATHON 2026</strong> by <strong>Team Zyven</strong><br>
+  <small><em>Event branding courtesy of DEXATHON 2026 / ACE NextGen Challenge organizers.</em></small>
 </p>
