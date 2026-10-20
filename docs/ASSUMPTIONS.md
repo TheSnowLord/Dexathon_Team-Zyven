@@ -80,3 +80,16 @@ Students organize their academic life using established calendar tools (Google C
 
 ### Rationale & Design Decision
 The backend generates native RFC 5545 `.ics` streams with proper `VEVENT`, `UID`, `DTSTART`, and `DTEND` tags. Students can export individual opportunity milestones or their entire preparation roadmap with a single click, instantly syncing deadlines across desktop and mobile devices.
+
+---
+
+## 7. Frontend Form & Motion Library Substitution
+
+### Assumption & Implementation Pivot
+The initial brief mentioned exploring Framer Motion and React Hook Form + Zod. During project setup on React 19 (`^19.3.1`), these libraries presented known peer-dependency conflicts with React 19.
+
+### Rationale & Design Decision
+To guarantee build reliability, zero peer-dependency warnings, and sub-second bundle performance:
+- **Hardware-Accelerated CSS Transitions:** Replaced heavy JS animation bundles (`framer-motion`) with native Tailwind CSS transitions, CSS transforms, and `@media (prefers-reduced-motion: reduce)` accessibility compliance in `index.css`.
+- **Controlled React 19 Forms + TanStack Query v5:** Replaced `react-hook-form` + `zod` with native controlled inputs, direct type-safe validation, and TanStack Query mutations (`useMutation`). This keeps the client bundle light (~111KB gzipped total) while providing immediate UI state feedback and automatic server cache synchronization.
+

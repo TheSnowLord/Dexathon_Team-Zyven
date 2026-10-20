@@ -93,8 +93,8 @@ export const Header: React.FC = () => {
                 title="Edit student profile"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-status-meets" />
-                <span className="text-ink font-semibold max-w-[120px] truncate">
-                  Year {profile.year} · {profile.branch.split(" ")[0]}
+                <span className="text-ink font-semibold max-w-[160px] truncate">
+                  Year {profile.year} · {profile.branch}
                 </span>
               </Link>
             )}

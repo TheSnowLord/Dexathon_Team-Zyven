@@ -22,7 +22,7 @@ The **ACE Opportunity Compass** is an additive planning and confidence layer bui
 ```mermaid
 flowchart TD
     subgraph Browser ["Frontend Client (apps/web)"]
-        UI["React 18 + Vite + Tailwind CSS"]
+        UI["React 19 + Vite + Tailwind CSS"]
         Rtr["React Router (5 Stages)"]
         TQ["TanStack Query (Cache & State)"]
         ICS["RFC 5545 .ics Calendar Downloader"]

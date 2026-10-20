@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/TheSnowLord/Dexathon_Team-Zyven/apps/api/internal/handlers"
 	"github.com/TheSnowLord/Dexathon_Team-Zyven/apps/api/internal/store"
@@ -83,8 +85,22 @@ func main() {
 		port = "8080"
 	}
 
+	// Setup graceful shutdown listener
+	stopChan := make(chan os.Signal, 1)
+	signal.Notify(stopChan, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		<-stopChan
+		log.Println("Received termination signal. Gracefully shutting down Fiber...")
+		if err := app.Shutdown(); err != nil {
+			log.Printf("Error during server shutdown: %v", err)
+		}
+	}()
+
 	log.Printf("Starting ACE Opportunity Compass API server on port :%s", port)
 	if err := app.Listen(":" + port); err != nil {
-		log.Fatalf("Server stopped: %v", err)
+		log.Printf("Server event: %v", err)
 	}
+
+	log.Println("Cleaning up database connections and exiting.")
 }

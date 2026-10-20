@@ -5,7 +5,7 @@
 [![Category: Software](https://img.shields.io/badge/Category-Software-orange.svg)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 [![Go 1.22+](https://img.shields.io/badge/Go-1.22%2B-00ADD8.svg?logo=go)](https://golang.org)
-[![React 18](https://img.shields.io/badge/Frontend-React%2018%20%2B%20TypeScript-61DAFB.svg?logo=react)](https://react.dev)
+[![React 19](https://img.shields.io/badge/Frontend-React%2019%20%2B%20TypeScript-61DAFB.svg?logo=react)](https://react.dev)
 
 > **An additive planning and confidence layer on top of opportunity discovery for college students.**  
 > Built for **DEXATHON 2026** · *ACE NextGen Challenge (Problem Statement Category: Software)*  
@@ -92,17 +92,19 @@ Engineered for flawless operation on smartphones, tablets, and desktop workstati
 Dexathon_Team-Zyven/
 ├── apps/
 │   ├── api/                      # Go Fiber v2 REST Backend
-│   │   ├── cmd/server/main.go    # Server entrypoint with graceful shutdown
-│   │   ├── internal/             # Domain logic (Matching, Step Gen, ICS Gen, Handlers, DB)
-│   │   │   ├── db/               # SQLite connection + go:embed migrations runner
+│   │   ├── cmd/server/main.go    # Server entrypoint with signal-based graceful shutdown
+│   │   ├── internal/             # Domain logic & persistence
+│   │   │   ├── store/            # SQLite connection + go:embed migrations runner
 │   │   │   ├── models/           # Data contracts (Profile, Opportunity, PlanItem, Reminders)
-│   │   │   ├── matching/         # 3-tier deterministic eligibility rules engine
-│   │   │   ├── planning/         # Backward milestone back-off step generator
-│   │   │   ├── ics/              # RFC 5545 iCalendar stream generator
+│   │   │   ├── matching/         # Rules-first matching engine, step generator & RFC 5545 ICS builder
+│   │   │   │   ├── matching.go   # 3-tier deterministic eligibility rules engine
+│   │   │   │   ├── steps.go      # Backward milestone back-off step generator
+│   │   │   │   └── ics.go        # Deterministic RFC 5545 iCalendar stream generator
 │   │   │   └── handlers/         # REST endpoints with JSON envelope formatting
-│   │   └── sql/migrations/       # Versioned SQLite DDL migrations
+│   │   ├── migrations/           # Versioned SQLite DDL migrations (go:embed)
+│   │   └── seed/                 # Pre-seeded database with 9 opportunities & demo profile
 │   │
-│   └── web/                      # React 18 + TypeScript + Vite Frontend
+│   └── web/                      # React 19 + TypeScript + Vite Frontend
 │       ├── src/
 │       │   ├── components/       # Header (live ping dot), Footer, Layout
 │       │   ├── pages/            # Discover, Profile, Detail, Plan, Settings
@@ -115,9 +117,9 @@ Dexathon_Team-Zyven/
 ```
 
 ### Technology Highlights
-- **Backend:** Go 1.22+ with [Fiber v2](https://gofiber.io) (high-throughput, lightweight HTTP engine).
+- **Backend:** Go 1.22+ with [Fiber v2](https://gofiber.io) (high-throughput, lightweight HTTP engine with signal-based graceful shutdown).
 - **Database:** Pure-Go [modernc.org/sqlite](https://gitlab.com/cznic/sqlite) (zero CGO toolchain requirements, WAL concurrency, relational foreign key cascade).
-- **Frontend:** React 18 with TypeScript and [Vite](https://vitejs.dev) (sub-second HMR).
+- **Frontend:** React 19 with TypeScript and [Vite](https://vitejs.dev) (sub-second HMR).
 - **Styling:** Tailwind CSS with an editorial design system (Fraunces serif display, Public Sans body, accessible focus rings, WCAG AA contrast).
 - **State Management:** [TanStack Query v5](https://tanstack.com/query) for reactive server synchronization and automatic cache invalidation.
 - **Calendar Standard:** RFC 5545 compliant `.ics` generator with custom UID and timestamp formatting.
